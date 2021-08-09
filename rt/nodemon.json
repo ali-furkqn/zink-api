@@ -1,0 +1,5 @@
+{ 
+    "watch": ["src"],
+    "exec": "rimraf dist && tsc && node dist/main.js" ,
+    "ext": "js, json, ts"
+}

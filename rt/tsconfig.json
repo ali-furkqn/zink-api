@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "removeComments": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "ES2020",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "incremental": true,
+        "typeRoots": ["node_modules/@types","src/@types"]
+    },
+    "exclude": ["node_modules","dist","test","**/*spec.ts","jest-setup.ts"]
+}
