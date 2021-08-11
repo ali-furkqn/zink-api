@@ -4,79 +4,75 @@ import {
     ExecutionContext,
     Inject,
     forwardRef,
-    HttpStatus,
-} from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import * as jwt from "jsonwebtoken";
-import * as cache from "memory-cache";
-import Config from "../config";
-import { UsersService } from "../api/users/user.service";
+    Logger,
+} from "@nestjs/common"
+import { Reflector } from "@nestjs/core"
+import * as jwt from "jsonwebtoken"
+import { AppConfigService } from "@/config/config.service"
+import { UsersService } from "@/api/users/user.service"
+import { Cache } from "cache-manager"
+import { CACHE_MANAGER } from "@nestjs/common"
+import { FlagService } from "./flag.service"
 
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
         @Inject(forwardRef(() => UsersService))
         private userService: UsersService,
+        private appConfigService: AppConfigService,
+        @Inject(CACHE_MANAGER)
+        private cacheManager: Cache,
+        private flagService: FlagService,
         private reflector: Reflector,
     ) {}
-
-    errHandler(message: string, res: { [prop: string]: any }): void {
-        res.status(HttpStatus.UNAUTHORIZED).send({
-            err: { message },
-        });
-    }
 
     succHandler(
         req: { [prop: string]: any },
         data: { [prop: string]: any },
     ): void {
-        req.user = data;
+        req.user = data
     }
 
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
-        const flags = this.reflector.get<number>("flags", ctx.getHandler());
-        const [req, res] = [
-            ctx.switchToHttp().getRequest(),
-            ctx.switchToHttp().getResponse(),
-        ];
-        let token: string =
-            req.query["access_token"] ||
-            req.headers["authorization"] ||
-            req.headers["x-access-token"];
+        const flags = this.reflector.get<number>("flags", ctx.getHandler())
+        const req = ctx.switchToHttp().getRequest()
 
-        if (!token) return false;
+        let token: string =
+            req.query["access_token"] || req.headers["authorization"]
+
+        if (!token) return false
         token = token.startsWith("Bearer")
             ? token.match(/[^Bearer]\S+/g)[0].trim()
-            : token;
+            : token
 
         try {
             const decoded = (await jwt.verify(
                 token,
-                Config().secret,
-            )) as Zink.IToken;
+                this.appConfigService.app.jwtSecret,
+            )) as Zink.IToken
 
-            const cacheUser = cache.get(decoded.id);
+            const cacheUser = await this.cacheManager.get(`user.${decoded.id}`)
 
-            if (cacheUser !== null && !cacheUser) return false;
-            else if (cache.get(decoded.id) === true)
-                this.succHandler(req, decoded);
-            else {
+            if (cacheUser !== null) {
+                if (!cacheUser) return false
+
+                this.succHandler(req, decoded)
+            } else {
                 const [isExist, user] = await this.userService.isExist(
                     decoded.id,
-                );
-                cache.put(
-                    decoded.id,
-                    isExist && user.email === decoded.email,
-                    24 * 60 * 60 * 1000,
-                );
-                if (!isExist || user.email !== decoded.email) return false;
-                this.succHandler(req, decoded);
+                )
+
+                if (!isExist || user.email !== decoded.email) return false
+                await this.cacheManager.set(decoded.id, true, 60 * 60 * 1000)
+
+                this.succHandler(req, decoded)
             }
         } catch (e) {
-            return false;
+            Logger.log(`Error occured { ${e} } `, "AuthGuard")
+            return false
         }
 
-        if (flags) return this.userService.matchFlags(flags, req.user.flags);
-        return true;
+        if (flags) return this.flagService.isMatchFlag(flags, req.user.flags)
+        return true
     }
 }

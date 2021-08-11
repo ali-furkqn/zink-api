@@ -1,51 +1,51 @@
-import "@firebase/storage";
+import "@firebase/storage"
 import {
     Injectable,
     Logger,
     NotFoundException,
     BadRequestException,
-} from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import * as firebase from "firebase";
-import { v4 as uuidV4 } from "uuid";
-import * as path from "path";
-import * as mime from "mime-types";
-import * as sharp from "sharp";
-import got from "got";
+} from "@nestjs/common"
+import { v4 as uuidV4 } from "uuid"
+import * as firebase from "firebase"
+import * as path from "path"
+import * as mime from "mime-types"
+import * as sharp from "sharp"
+import got from "got"
+import { AppConfigService } from "@/config/config.service"
 
 @Injectable()
 export class AssetsService {
     private readonly FirebaseInstance = firebase.initializeApp(
-        this.configService.get("Firebase"),
-    );
-    private readonly StorageInstance = this.FirebaseInstance.storage();
-    private readonly FirebaseStorage = this.StorageInstance.ref();
+        this.appConfigService.firebase,
+    )
+    private readonly StorageInstance = this.FirebaseInstance.storage()
+    private readonly FirebaseStorage = this.StorageInstance.ref()
 
-    constructor(private readonly configService: ConfigService) {}
+    constructor(private readonly appConfigService: AppConfigService) {}
 
     async upload(
         file: Zink.AssetsUpFile,
         type?: string,
         vanityName?: string,
     ): Promise<Zink.Response & { path: string }> {
-        if (!file) throw new BadRequestException("file should not be empty");
-        const id = vanityName || uuidV4();
+        if (!file) throw new BadRequestException("file should not be empty")
+        const id = vanityName || uuidV4()
 
-        const ext = path.extname(file.originalname);
-        const name = path.basename(file.originalname, ext);
+        const ext = path.extname(file.originalname)
+        const name = path.basename(file.originalname, ext)
 
-        const buff = file.buffer;
+        const buff = file.buffer
 
-        const storagePath = `assets/${type || "public"}/${id}/${name}${ext}`;
+        const storagePath = `assets/${type || "public"}/${id}/${name}${ext}`
 
-        const fileRef = this.FirebaseStorage.child(storagePath);
+        const fileRef = this.FirebaseStorage.child(storagePath)
         await fileRef.put(buff, {
             contentEncoding: file.encoding,
             contentType: mime.lookup(ext) || "text/plain; charset=utf-8",
-        });
+        })
 
-        Logger.log(`Uploaded New File { ${storagePath} }`, "Assets");
-        return { message: "Successfully Uploaded Image", path: storagePath };
+        Logger.log(`Uploaded New File { ${storagePath} }`, "Assets")
+        return { message: "Successfully Uploaded Image", path: storagePath }
     }
 
     async get(
@@ -55,14 +55,16 @@ export class AssetsService {
     ): Promise<[Buffer, string]> {
         const ref = this.FirebaseStorage.child(
             `assets/${rootPath}/${id}/${name}`,
-        );
+        )
         try {
-            const { contentType } = await ref.getMetadata();
-            const fileURI: string = await ref.getDownloadURL();
-            const data = await got(fileURI);
-            return [data.rawBody, contentType];
+            const { contentType } = await ref.getMetadata()
+            const fileURI: string = await ref.getDownloadURL()
+
+            const data = await got(fileURI)
+
+            return [data.rawBody, contentType]
         } catch (e) {
-            throw new NotFoundException("File Not Found");
+            throw new NotFoundException("File Not Found")
         }
     }
 
@@ -70,17 +72,20 @@ export class AssetsService {
         return await sharp(img)
             .resize(size, size)
             .webp({ quality: 70, lossless: true })
-            .toBuffer();
+            .toBuffer()
     }
 
     async delete(path: string): Promise<Zink.Response> {
-        const ref = this.FirebaseStorage.child(`assets/${path}`);
+        const ref = this.FirebaseStorage.child(`assets/${path}`)
+
         try {
-            await ref.delete();
-            Logger.log(`Deleted File { assets/${path} }`, "Assets");
-            return { message: "Successfully Deleted File" };
+            await ref.delete()
+
+            Logger.log(`Deleted File { assets/${path} }`, "Assets")
+
+            return { message: "Successfully Deleted File" }
         } catch (e) {
-            throw new NotFoundException("File Not Found");
+            throw new NotFoundException("File Not Found")
         }
     }
 }

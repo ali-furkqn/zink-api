@@ -1,15 +1,14 @@
-import { Module } from "@nestjs/common";
-import { RouterModule } from "nest-router";
-import { UsersModule, StatusModule, MatchModule } from "./";
-import { WordModule } from "./words/words.module";
+import { Module } from "@nestjs/common"
+import { RouterModule } from "nest-router"
+import { UsersModule, StatusModule, MatchModule, WordModule } from "./"
 
 @Module({
     imports: [
         RouterModule.forRoutes([
             {
-                path: "/api/v1",
+                path: "/api/",
                 module: ApiModule,
-                children: [StatusModule, UsersModule, MatchModule],
+                children: [StatusModule, UsersModule, MatchModule, WordModule],
             },
         ]),
         UsersModule,

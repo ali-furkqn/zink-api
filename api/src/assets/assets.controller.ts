@@ -8,12 +8,13 @@ import {
     UploadedFile,
     UseGuards,
     Res,
-} from "@nestjs/common";
-import { FileInterceptor } from "@webundsoehne/nest-fastify-file-upload";
-import { AssetsService } from "./assets.service";
-import { AuthGuard } from "src/auth/auth.guard";
-import { Flags, Flag } from "src/auth/flag.decorator";
-import { FastifyReply } from "fastify";
+} from "@nestjs/common"
+import { FileInterceptor } from "@webundsoehne/nest-fastify-file-upload"
+import { AssetsService } from "./assets.service"
+import { AuthGuard } from "src/auth/auth.guard"
+import { Flag } from "src/auth/flag.service"
+import { Flags } from "src/auth/flag.decorator"
+import { FastifyReply } from "fastify"
 
 @Controller("assets")
 export class AssetsController {
@@ -26,13 +27,9 @@ export class AssetsController {
         @Param("name") name: string,
         @Res() res: FastifyReply,
     ): Promise<void> {
-        const [data, contentType] = await this.assetsService.get(
-            type,
-            id,
-            name,
-        );
-        res.header("Content-Type", contentType);
-        res.send(data);
+        const [data, contentType] = await this.assetsService.get(type, id, name)
+        res.header("Content-Type", contentType)
+        res.send(data)
     }
 
     @Flags(Flag.DEV)
@@ -47,9 +44,9 @@ export class AssetsController {
             "dev",
             id,
             name,
-        );
-        res.header("Content-Type", contentType);
-        res.send(data);
+        )
+        res.header("Content-Type", contentType)
+        res.send(data)
     }
 
     @Flags(Flag.DEV)
@@ -60,7 +57,7 @@ export class AssetsController {
         @Param("type") type: string,
         @UploadedFile("file") file: Zink.AssetsUpFile,
     ): Promise<Zink.Response> {
-        return await this.assetsService.upload(file, type);
+        return await this.assetsService.upload(file, type)
     }
 
     @Flags(Flag.DEV)
@@ -71,6 +68,6 @@ export class AssetsController {
         @Param("id") id: string,
         @Param("name") name: string,
     ): Promise<Zink.Response> {
-        return await this.assetsService.delete(`${type}/${id}/${name}`);
+        return await this.assetsService.delete(`${type}/${id}/${name}`)
     }
 }
