@@ -1,11 +1,10 @@
-FROM node:current-alpine
+FROM node:current-alpine AS pre-builder
 
 WORKDIR /app
 
-ARG BASE_URL
-ARG APP_NAME
-ARG KEY
-ARG TOKEN
+ENV VAULT_ADDR=""
+ENV VAULT_TOKEN=""
+ENV VAULT_PATH=""
 
 RUN apk add python make gcc g++
 
@@ -23,4 +22,12 @@ COPY tsconfig.build.json tsconfig.json ./
 
 RUN npm run build
 
-CMD [ "npm","run","start:prod","${BASE_URL}","${APP_NAME}","${KEY}","${TOKEN}"]
+# Build for executable
+RUN npm i -g nexe@latest
+RUN nexe /app/dist/src/main.js -o /app/api
+
+FROM scratch
+
+COPY --from=builder /app/api /bin/api
+
+CMD [ "/bin/api" ]
