@@ -1,7 +1,7 @@
-import { forwardRef, HttpModule, Module } from "@nestjs/common";
-import { AssetsService } from "./assets.service";
-import { UsersModule } from "src/api";
-import { AssetsController } from "./assets.controller";
+import { forwardRef, HttpModule, Module } from "@nestjs/common"
+import { AssetsService } from "./assets.service"
+import { UsersModule } from "src/api"
+import { AssetsController } from "./assets.controller"
 
 @Module({
     imports: [forwardRef(() => UsersModule), HttpModule],
@@ -11,7 +11,8 @@ import { AssetsController } from "./assets.controller";
 })
 export class AssetsModule {
     constructor() {
-        global.XMLHttpRequest = require("xhr2");
-        global.WebSocket = require("ws");
+        // It should preload them for Firebase
+        global.XMLHttpRequest = require("xhr2")
+        global.WebSocket = require("ws")
     }
 }
