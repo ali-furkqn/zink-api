@@ -8,12 +8,13 @@ import {
     Body,
     UseInterceptors,
     ClassSerializerInterceptor,
-} from "@nestjs/common";
-import { AuthGuard } from "../../auth/auth.guard";
-import { MatchService } from "./match.service";
-import { Flags, Flag } from "../../auth/flag.decorator";
-import { User } from "../users/user.decorator";
-import { CreateMatchDTO, DeleteMatchDTO, GetMatchDto } from "./dto";
+} from "@nestjs/common"
+import { AuthGuard } from "@/auth/auth.guard"
+import { Flag } from "@/auth/flag.service"
+import { Flags } from "@/auth/flag.decorator"
+import { User } from "@/api/users/user.decorator"
+import { MatchService } from "./match.service"
+import { CreateMatchDTO, DeleteMatchDTO, GetMatchDto } from "./dto"
 
 @Controller("/matches")
 export class MatchController {
@@ -26,7 +27,7 @@ export class MatchController {
         @Param() params: GetMatchDto,
         @User() user: Zink.RequestUser,
     ): Promise<Zink.Response> {
-        return this.matchService.getMatch({ id: params.id, user });
+        return this.matchService.getMatch({ id: params.id, user })
     }
 
     @Flags(Flag.CREATE_MATCH)
@@ -40,13 +41,13 @@ export class MatchController {
             paramID
                 ? Object.assign({}, body, { id: paramID || body.id })
                 : body,
-        );
+        )
     }
 
     @Flags(Flag.CREATE_MATCH)
     @Delete("/:id")
     @UseGuards(AuthGuard)
     async deleteMatch(@Param() params: DeleteMatchDTO): Promise<Zink.Response> {
-        return await this.matchService.deleteMatch(params.id);
+        return await this.matchService.deleteMatch(params.id)
     }
 }
