@@ -16,16 +16,7 @@ module.exports = {
         node: true,
         jest: true,
     },
-    ovverides: [
-        {
-            files: ["scripts/*"],
-            rules: {
-                "@typescript-eslint/no-var-requires": "off",
-            },
-        },
-    ],
     rules: {
-        "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-explicit-any": "off",
     },
