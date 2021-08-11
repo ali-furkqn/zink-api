@@ -1,13 +1,15 @@
-import { Module } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { ConfigModule } from "@nestjs/config";
-import * as sgMail from "@sendgrid/mail";
-import Config from "./config";
-import { RateLimiterModule, RateLimiterGuard } from "nestjs-rate-limit";
-import { ApiModule } from "./api/api.module";
-import { AssetsModule } from "./assets/assets.module";
-import { AuthModule } from "./auth/auth.module";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common"
+import { APP_GUARD } from "@nestjs/core"
+import { TypeOrmModule } from "@nestjs/typeorm"
+import { RateLimiterModule, RateLimiterGuard } from "nestjs-rate-limit"
+// Modules
+import { ApiModule } from "@/api/api.module"
+import { AssetsModule } from "@/assets/assets.module"
+import { AuthModule } from "@/auth/auth.module"
+import { AppConfigModule } from "@/config/config.module"
+// Middlewares
+import { MorganMiddleware } from "@/common/middlewares/morgan.middleware"
+import { TimeMiddleware } from "@/common/middlewares/time.middleware"
 
 @Module({
     imports: [
@@ -15,10 +17,6 @@ import { AuthModule } from "./auth/auth.module";
             points: 32,
             duration: 5,
             keyPrefix: "global",
-        }),
-        ConfigModule.forRoot({
-            isGlobal: true,
-            load: [Config],
         }),
         TypeOrmModule.forRoot({
             type: "mongodb",
@@ -29,6 +27,7 @@ import { AuthModule } from "./auth/auth.module";
             useNewUrlParser: true,
             autoLoadEntities: true,
         }),
+        AppConfigModule,
         ApiModule,
         AuthModule,
         AssetsModule,
@@ -40,8 +39,8 @@ import { AuthModule } from "./auth/auth.module";
         },
     ],
 })
-export class AppModule {
-    constructor() {
-        sgMail.setApiKey(Config().sgKey);
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer): void {
+        consumer.apply(MorganMiddleware, TimeMiddleware).forRoutes("/(.*)")
     }
 }
