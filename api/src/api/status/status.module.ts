@@ -1,18 +1,13 @@
-import { Module, forwardRef } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { StatusController } from "./status.controller";
-import { StatusService } from "./status.service";
-import { UsersModule } from "../users/user.module";
-import { UserEntity } from "../users/user.entity";
-import { MatchEntity } from "../matches/match.entity";
+import { CacheModule, Module } from "@nestjs/common"
+import { UsersModule } from "@/api/users/user.module"
+import { AuthModule } from "@/auth/auth.module"
+import { StatusController } from "./status.controller"
+import { StatusService } from "./status.service"
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([UserEntity, MatchEntity]),
-        forwardRef(() => UsersModule),
-    ],
+    imports: [CacheModule.register(), UsersModule,AuthModule],
     controllers: [StatusController],
     providers: [StatusService],
-    exports: [TypeOrmModule],
+    exports: [],
 })
 export class StatusModule {}
