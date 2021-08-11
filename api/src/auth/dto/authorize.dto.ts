@@ -1,12 +1,12 @@
-import { IsEmail, IsNotEmpty, MinLength, MaxLength } from "class-validator";
+import { IsEmail, IsNotEmpty, MinLength, MaxLength } from "class-validator"
 
 export abstract class AuthorizeDto {
     @IsEmail()
     @IsNotEmpty()
-    email: string;
+    email: string
 
     @IsNotEmpty()
     @MaxLength(32)
     @MinLength(6)
-    password: string;
+    password: string
 }

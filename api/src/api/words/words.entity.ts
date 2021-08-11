@@ -4,21 +4,21 @@ import {
     ObjectID,
     ObjectIdColumn,
     Column,
-} from "typeorm";
-import { Exclude } from "class-transformer";
+} from "typeorm"
+import { Exclude } from "class-transformer"
 
 @Entity()
 export class WordEntity {
     @PrimaryColumn({ unique: true })
-    id: string;
+    id: string
 
     @Exclude()
     @ObjectIdColumn()
-    _id: ObjectID;
+    _id: ObjectID
 
     @Column({ unique: true })
-    value: string;
+    value: string
 
     @Column()
-    difficulty: number;
+    difficulty: number
 }

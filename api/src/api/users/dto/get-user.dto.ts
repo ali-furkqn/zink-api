@@ -1,12 +1,12 @@
-import { IsEmail, IsNotEmpty, IsUUID } from "class-validator";
-import { Optional } from "@nestjs/common";
+import { IsEmail, IsNotEmpty, IsUUID } from "class-validator"
+import { Optional } from "@nestjs/common"
 
 export abstract class GetUserDto {
     @IsUUID(5)
     @IsNotEmpty()
-    id: string;
+    id: string
 
     @IsEmail()
     @Optional()
-    email?: string;
+    email?: string
 }

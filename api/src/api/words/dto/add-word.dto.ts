@@ -1,4 +1,4 @@
-import { Optional } from "@nestjs/common";
+import { Optional } from "@nestjs/common"
 import {
     IsAlpha,
     Length,
@@ -6,22 +6,22 @@ import {
     IsNotEmpty,
     Max,
     IsUUID,
-} from "class-validator";
-import { Transform } from "class-transformer";
+} from "class-validator"
+import { Transform } from "class-transformer"
 
 export abstract class AddWordDto {
     @Optional()
     @IsUUID(4)
-    id?: string;
+    id?: string
 
     @IsNotEmpty()
     @IsAlpha()
     @Length(3, 64)
-    word: string;
+    word: string
 
     @Max(1)
     @IsNumber()
     @Transform(v => (typeof v === "string" ? parseInt(v) : v))
     @Optional()
-    difficulty?: number;
+    difficulty?: number
 }

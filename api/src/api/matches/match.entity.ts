@@ -5,34 +5,34 @@ import {
     ObjectIdColumn,
     CreateDateColumn,
     UpdateDateColumn,
-} from "typeorm";
-import { ObjectID } from "mongodb";
-import { Exclude } from "class-transformer";
+} from "typeorm"
+import { ObjectID } from "mongodb"
+import { Exclude } from "class-transformer"
 
 @Entity({ schema: "Match" })
 export class MatchEntity {
     @PrimaryGeneratedColumn()
-    id: string;
+    id: string
 
     @Exclude()
     @ObjectIdColumn()
-    _id!: ObjectID;
+    _id!: ObjectID
 
     @Column()
-    type: Zink.MatchTypes;
+    type: Zink.MatchTypes
 
     @Column()
-    status: boolean;
+    status: boolean
 
     @Column()
-    users: string[];
+    users: string[]
 
     @Column()
-    winner: { id: string };
+    winner: { id: string }
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt: Date
 
     @UpdateDateColumn()
-    updateAt: Date;
+    updateAt: Date
 }

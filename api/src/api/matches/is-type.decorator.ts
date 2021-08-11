@@ -1,4 +1,4 @@
-import { ValidationOptions, registerDecorator } from "class-validator";
+import { ValidationOptions, registerDecorator } from "class-validator"
 
 export const IsMatchType = (options?: ValidationOptions) => {
     return (object: unknown, propertyName: string): void => {
@@ -9,12 +9,12 @@ export const IsMatchType = (options?: ValidationOptions) => {
             options,
             validator: {
                 validate(value: unknown): boolean {
-                    if (typeof value !== "string") return false;
+                    if (typeof value !== "string") return false
                     return ["duel", "catch", "fast-finger", "math"].includes(
                         value,
-                    );
+                    )
                 },
             },
-        });
-    };
-};
+        })
+    }
+}

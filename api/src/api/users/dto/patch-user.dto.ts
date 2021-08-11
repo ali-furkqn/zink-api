@@ -4,25 +4,25 @@ import {
     MaxLength,
     MinLength,
     IsOptional,
-} from "class-validator";
+} from "class-validator"
 
 export abstract class PatchUserDto {
     @IsNotEmpty()
     @MaxLength(32)
     @MinLength(3)
-    username: string;
+    username: string
 
     @IsNotEmpty()
     @IsEmail()
-    email: string;
+    email: string
 
     @IsNotEmpty()
     @MaxLength(32)
     @MinLength(6)
-    password: string;
+    password: string
 
     @IsOptional()
     @MaxLength(32)
     @MinLength(6)
-    newPassword: string;
+    newPassword: string
 }

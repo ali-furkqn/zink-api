@@ -1,10 +1,10 @@
-import { IsNotEmpty, IsUUID } from "class-validator";
+import { IsNotEmpty, IsUUID } from "class-validator"
 
 export abstract class VerifyDto {
     @IsNotEmpty()
-    type: string;
+    type: string
 
     @IsNotEmpty()
     @IsUUID(4)
-    code: string;
+    code: string
 }

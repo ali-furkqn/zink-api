@@ -5,7 +5,7 @@ import { StatusController } from "./status.controller"
 import { StatusService } from "./status.service"
 
 @Module({
-    imports: [CacheModule.register(), UsersModule,AuthModule],
+    imports: [CacheModule.register(), UsersModule, AuthModule],
     controllers: [StatusController],
     providers: [StatusService],
     exports: [],

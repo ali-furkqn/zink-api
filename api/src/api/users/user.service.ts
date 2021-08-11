@@ -12,7 +12,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { v5 as uuidv5, v4 as uuidv4 } from "uuid"
 import { MongoRepository } from "typeorm"
 import * as argon2 from "argon2"
-import type { Cache } from "cache-manager"
+import { Cache } from "cache-manager"
 import { AuthService } from "@/auth/auth.service"
 import { Flag } from "@/auth/flag.service"
 import { AssetsService } from "@/assets/assets.service"
@@ -118,10 +118,7 @@ export class UsersService {
         }
     > {
         const hash = await argon2.hash(password)
-        const id = uuidv5(
-            email,
-            this.appConfigService.app.uuidNamespace
-        )
+        const id = uuidv5(email, this.appConfigService.app.uuidNamespace)
         const {
             access_token,
             expires_in,

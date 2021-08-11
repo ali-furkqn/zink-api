@@ -5,60 +5,60 @@ import {
     PrimaryColumn,
     CreateDateColumn,
     UpdateDateColumn,
-} from "typeorm";
-import { Exclude, Expose } from "class-transformer";
-import { ObjectID } from "mongodb";
+} from "typeorm"
+import { Exclude, Expose } from "class-transformer"
+import { ObjectID } from "mongodb"
 
 @Entity({ schema: "User" })
 export class UserEntity {
     @PrimaryColumn({ type: "string", nullable: false, unique: true })
-    id: string;
+    id: string
 
     @Exclude()
     @ObjectIdColumn()
-    _id: ObjectID;
+    _id: ObjectID
 
     @Expose()
     get tag(): string {
-        return `${this.username}#${this.discriminator}`;
+        return `${this.username}#${this.discriminator}`
     }
 
     @Column({ nullable: false })
-    avatar: string;
+    avatar: string
 
     @Column({ nullable: false })
-    flags: number;
+    flags: number
 
     @Column({ nullable: false })
-    discriminator: number;
+    discriminator: number
 
     @Column({ default: 100 })
-    coins = 100;
+    coins = 100
 
     @Column({ default: 5 })
-    gems = 5;
+    gems = 5
 
     @Column({ default: 0 })
-    xp = 0;
+    xp = 0
 
     @Column({ length: 32 })
-    username: string;
+    username: string
 
     @Exclude()
     @Column({ unique: true })
-    email: string;
+    email: string
 
     @Exclude()
     @Column()
-    password: string;
+    password: string
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt: Date
 
     @UpdateDateColumn()
-    updateAt: Date;
+    updateAt: Date
 
     constructor(partial: Partial<UserEntity>) {
-        Object.assign(this, partial);
+        Object.assign(this, partial)
     }
 }

@@ -1,4 +1,4 @@
-import { Optional } from "@nestjs/common";
+import { Optional } from "@nestjs/common"
 import {
     IsUUID,
     IsNotEmpty,
@@ -6,25 +6,25 @@ import {
     ArrayMinSize,
     IsArray,
     IsBoolean,
-} from "class-validator";
-import { IsMatchType } from "../is-type.decorator";
+} from "class-validator"
+import { IsMatchType } from "../is-type.decorator"
 
 export abstract class CreateMatchDTO {
     @IsUUID(4)
     @Optional()
-    id?: string;
+    id?: string
 
     @IsBoolean()
     @Optional()
-    status?: boolean;
+    status?: boolean
 
     @IsMatchType()
     @IsNotEmpty()
-    type: Zink.MatchTypes;
+    type: Zink.MatchTypes
 
     @ArrayMaxSize(6)
     @ArrayMinSize(2)
     @IsArray()
     @IsNotEmpty()
-    users: string[];
+    users: string[]
 }
