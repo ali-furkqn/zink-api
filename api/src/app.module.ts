@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common"
+import {
+    CacheModule,
+    MiddlewareConsumer,
+    Module,
+    NestModule,
+} from "@nestjs/common"
 import { APP_GUARD } from "@nestjs/core"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { RateLimiterModule, RateLimiterGuard } from "nestjs-rate-limit"
@@ -10,6 +15,9 @@ import { AppConfigModule } from "@/config/config.module"
 // Middlewares
 import { MorganMiddleware } from "@/common/middlewares/morgan.middleware"
 import { TimeMiddleware } from "@/common/middlewares/time.middleware"
+// Configurations
+import { DBConfiguration } from "./config/configuration/db.configuration"
+import { AppConfiguration } from "./config/configuration/app.configuration"
 
 @Module({
     imports: [
@@ -18,15 +26,18 @@ import { TimeMiddleware } from "@/common/middlewares/time.middleware"
             duration: 5,
             keyPrefix: "global",
         }),
-        TypeOrmModule.forRoot({
-            type: "mongodb",
-            url: process.env.DB_URI,
-            synchronize: true,
-            logger: "debug",
-            useUnifiedTopology: true,
-            useNewUrlParser: true,
-            autoLoadEntities: true,
+        TypeOrmModule.forRootAsync({
+            useFactory: () => ({
+                type: "mongodb",
+                url: DBConfiguration().uri,
+                synchronize: AppConfiguration().env === "development",
+                logger: "simple-console",
+                useUnifiedTopology: true,
+                useNewUrlParser: true,
+                autoLoadEntities: true,
+            }),
         }),
+        CacheModule.register(),
         AppConfigModule,
         ApiModule,
         AuthModule,
