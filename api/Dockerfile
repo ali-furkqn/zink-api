@@ -1,14 +1,8 @@
-FROM node:current-alpine AS pre-builder
+FROM node:current-alpine AS builder
 
 WORKDIR /app
 
-ENV VAULT_ADDR=""
-ENV VAULT_TOKEN=""
-ENV VAULT_PATH=""
-
 RUN apk add python make gcc g++
-
-ENV PORT=8080
 
 COPY package.json package-lock.json nest-cli.json ./
 
@@ -17,7 +11,6 @@ RUN npm i -g rimraf @nestjs/cli
 RUN npm i -D tsconfig-paths
 
 COPY src src
-COPY scripts scripts
 COPY tsconfig.build.json tsconfig.json ./
 
 RUN npm run build
@@ -27,6 +20,9 @@ RUN npm i -g nexe@latest
 RUN nexe /app/dist/src/main.js -o /app/api
 
 FROM scratch
+
+ENV PORT=8080
+ENV NODE_ENV="production"
 
 COPY --from=builder /app/api /bin/api
 
