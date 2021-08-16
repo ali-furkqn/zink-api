@@ -1,4 +1,5 @@
 import { NestFactory } from "@nestjs/core"
+import { ConfigService } from "@nestjs/config"
 import * as helmet from "fastify-helmet"
 import * as multer from "fastify-multer"
 import {
@@ -6,16 +7,19 @@ import {
     NestFastifyApplication,
 } from "@nestjs/platform-fastify"
 import { ValidationPipe } from "@nestjs/common"
+import { registerVault } from "@/common/helpers/register-vault"
 import { AppModule } from "./app.module"
-import { ConfigService } from "@nestjs/config"
 
 async function bootstrap() {
+    await registerVault()
+
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter(),
     )
+    
     const configService = app.get(ConfigService)
-    const port = configService.get("PORT")
+    const port = configService.get("app.port") || 3000
 
     app.getHttpAdapter()
         .getInstance()
@@ -27,6 +31,7 @@ async function bootstrap() {
             transform: true,
         }),
     )
+
     await app.listen(port, "0.0.0.0")
 }
 

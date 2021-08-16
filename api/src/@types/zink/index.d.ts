@@ -64,5 +64,11 @@ declare global {
             senderMail: string
             sgKey: string
         }
+
+        interface VaultConfiguration {
+            addr: string
+            token: string
+            path: string
+        }
     }
 }
