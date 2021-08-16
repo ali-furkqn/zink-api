@@ -17,7 +17,7 @@ async function bootstrap() {
         AppModule,
         new FastifyAdapter(),
     )
-    
+
     const configService = app.get(ConfigService)
     const port = configService.get("app.port") || 3000
 

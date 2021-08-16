@@ -5,9 +5,7 @@ import { IncomingMessage, ServerResponse } from "http"
 
 @Injectable()
 export class MorganMiddleware implements NestMiddleware {
-    constructor(
-        private readonly config: AppConfigService,
-    ) {}
+    constructor(private readonly config: AppConfigService) {}
 
     use(
         req: IncomingMessage,

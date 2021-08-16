@@ -9,18 +9,20 @@ export async function registerVault(): Promise<void> {
     const url = [vaultConf.addr, "v1", vaultConf.path].join("/")
 
     try {
-        const { data } = await axios
-            .get(url, {
-                headers: {
-                    "X-Vault-Token": vaultConf.token,
-                },
-            })
+        const { data } = await axios.get(url, {
+            headers: {
+                "X-Vault-Token": vaultConf.token,
+            },
+        })
 
         const secrets = data.data.data
 
-        Logger.debug(`${Object.keys(secrets).length} secrets loaded from vault`, "Vault Register")
+        Logger.debug(
+            `${Object.keys(secrets).length} secrets loaded from vault`,
+            "Vault Register",
+        )
 
-        for(const key in secrets) {
+        for (const key in secrets) {
             process.env[key] = secrets[key]
         }
     } catch (err) {

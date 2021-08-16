@@ -5,13 +5,13 @@ import {
     Inject,
     forwardRef,
     Logger,
+    CACHE_MANAGER,
 } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
+import { Cache } from "cache-manager"
 import * as jwt from "jsonwebtoken"
 import { AppConfigService } from "@/config/config.service"
 import { UsersService } from "@/api/users/user.service"
-import { Cache } from "cache-manager"
-import { CACHE_MANAGER } from "@nestjs/common"
 import { FlagService } from "./flag.service"
 
 @Injectable()
