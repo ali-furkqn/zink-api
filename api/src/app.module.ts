@@ -20,7 +20,7 @@ import { TimeMiddleware } from "@/common/middlewares/time.middleware"
         }),
         TypeOrmModule.forRoot({
             type: "mongodb",
-            url: process.env.MONGODB_URI,
+            url: process.env.DB_URI,
             synchronize: true,
             logger: "debug",
             useUnifiedTopology: true,
