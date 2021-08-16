@@ -7,14 +7,15 @@ import {
 } from "@nestjs/platform-fastify"
 import { ValidationPipe } from "@nestjs/common"
 import { AppModule } from "./app.module"
-
-const port = parseInt(process.env.PORT) || 3000
+import { ConfigService } from "@nestjs/config"
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter(),
     )
+    const configService = app.get(ConfigService)
+    const port = configService.get("PORT")
 
     app.getHttpAdapter()
         .getInstance()
