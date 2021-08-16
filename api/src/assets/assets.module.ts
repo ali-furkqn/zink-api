@@ -1,10 +1,16 @@
-import { forwardRef, HttpModule, Module } from "@nestjs/common"
+import { CacheModule, forwardRef, HttpModule, Module } from "@nestjs/common"
 import { AssetsService } from "./assets.service"
 import { UsersModule } from "src/api"
 import { AssetsController } from "./assets.controller"
+import { AuthModule } from "@/auth/auth.module"
 
 @Module({
-    imports: [forwardRef(() => UsersModule), HttpModule],
+    imports: [
+        forwardRef(() => UsersModule),
+        forwardRef(() => AuthModule),
+        HttpModule,
+        CacheModule.register(),
+    ],
     controllers: [AssetsController],
     providers: [AssetsService],
     exports: [AssetsService],

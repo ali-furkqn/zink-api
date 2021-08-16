@@ -6,7 +6,7 @@ import {
     BadRequestException,
 } from "@nestjs/common"
 import { v4 as uuidV4 } from "uuid"
-import * as firebase from "firebase"
+import firebase from "firebase"
 import * as path from "path"
 import * as mime from "mime-types"
 import * as sharp from "sharp"

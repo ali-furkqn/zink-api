@@ -1,4 +1,4 @@
-import { Injectable, LoggerService, NestMiddleware } from "@nestjs/common"
+import { Injectable, Logger, NestMiddleware } from "@nestjs/common"
 import * as morgan from "morgan"
 import { AppConfigService } from "@/config/config.service"
 import { IncomingMessage, ServerResponse } from "http"
@@ -6,7 +6,6 @@ import { IncomingMessage, ServerResponse } from "http"
 @Injectable()
 export class MorganMiddleware implements NestMiddleware {
     constructor(
-        private readonly logger: LoggerService,
         private readonly config: AppConfigService,
     ) {}
 
@@ -17,7 +16,7 @@ export class MorganMiddleware implements NestMiddleware {
     ): void {
         morgan(this.config.app.env === "development" ? "dev" : "combined", {
             stream: {
-                write: w => this.logger.log(w, "Request"),
+                write: w => Logger.log(w, "Request"),
             },
         })(req, res, next)
     }
